@@ -27,6 +27,14 @@ module.exports = function(router){
         .route('/api/user/logout')
         .get(auth.logout);
 
+    router
+        .route('/api/token-login')
+        .post(auth.tokenLogin);
+
+    router
+        .route('/api/forgot-password')
+        .post(auth.forgotPassword);
+
     /**
      * User Section
      */

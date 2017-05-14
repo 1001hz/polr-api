@@ -8,7 +8,7 @@ module.exports = {
 
     create: function(req, res, next) {
         userService
-            .create(req.body.username, req.body.password)
+            .create(req.body.email, req.body.password)
             .then(function(user){
                 res.json(user);
             })
@@ -19,7 +19,7 @@ module.exports = {
 
     update: function(req, res, next){
         userService
-            .update(req.body.user)
+            .update(req.body)
             .then(function(user){
                 res.json(user);
             })

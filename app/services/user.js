@@ -17,9 +17,9 @@ module.exports = {
                 });
     },
 
-    login: function(username, password) {
+    login: function(email, password) {
         return User
-            .findOne({ username: username })
+            .findOne({ email: email })
             .exec()
             .then(function(aUser){
                 if(!aUser) {
@@ -37,8 +37,22 @@ module.exports = {
             });
     },
 
-    create: function(username, password) {
-        return User.findOne({ username: username })
+    tokenLogin: function(token) {
+        return User
+            .findOne({ token: token })
+            .exec()
+            .then(function(aUser){
+                if(!aUser) {
+                    throw({status: 401, message: "Cannot log in with token"});
+                }
+                else {
+                    return aUser;
+                }
+            });
+    },
+
+    create: function(email, password) {
+        return User.findOne({ email: email })
                 .select('id')
                 .exec()
                 .then(function(aUser){
@@ -49,7 +63,7 @@ module.exports = {
                         var passwordHash = crypto.createHash('sha256').update(password).digest('hex');
 
                         var newUser = new User({
-                            username: username,
+                            email: email,
                             password: passwordHash
                         });
 
@@ -67,19 +81,24 @@ module.exports = {
 
     update: function(user) {
         return User
-            .findOne({ _id: user.id })
+            .findOne({ _id: user._id })
             .exec()
             .then(function(aUser){
-                var query = { _id: user.id };
-                var updateFields = aUser.updateFields(user);
-                var options = {new: true};
-                return User.findOneAndUpdate(query, updateFields, options).exec();
+                if(aUser){
+                    var query = { _id: user._id };
+                    var updateFields = aUser.updateFields(user);
+                    var options = {new: true};
+                    return User.findOneAndUpdate(query, updateFields, options).exec();
+                }
+                else {
+                    throw({status: 422, message: "User doesn't exist"});
+                }
             });
     },
 
     updatePassword: function(user, currentPassword, newPassword) {
         return User
-            .findOne({ _id: user.id })
+            .findOne({ _id: user._id })
             .exec()
             .then(function(aUser){
                 if(aUser.comparePassword(currentPassword)){
@@ -90,5 +109,22 @@ module.exports = {
                     throw({status: 422, message: "Password is incorrect"});
                 }
             });
+    },
+
+    forgotPassword: function(enteredEmail) {
+        return Promise(function(resolve, reject){
+            User
+                .findOne({ email: enteredEmail })
+                .exec()
+                .then(function(aUser){
+                    if(aUser){
+                        resolve("An email has been sent with a reset link to your email address");
+                    }
+                    else {
+                        reject("The email you entered is not correct");
+                    }
+                });
+
+        })
     }
 };
