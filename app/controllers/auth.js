@@ -37,9 +37,20 @@ module.exports = {
 
     forgotPassword: function(req, res, next) {
         userService
-            .forgotPassword(req.body)
-            .then(function(user){
-                res.json(user);
+            .forgotPassword(req.body.email)
+            .then(function(message){
+                res.json(message);
+            })
+            .catch(function(error) {
+                return next(error);
+            })
+    },
+
+    resetPassword: function(req, res, next) {
+        userService
+            .resetPassword(req.body.token, req.body.email, req.body.password)
+            .then(function(message){
+                res.json(message);
             })
             .catch(function(error) {
                 return next(error);

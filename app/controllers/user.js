@@ -37,6 +37,17 @@ module.exports = {
             .catch(function(error) {
                 return next(error);
             });
+    },
+
+    updateAvatar: function(req, res, next){
+        userService
+            .updateAvatar(req, res)
+            .then(function(user){
+                res.json(user);
+            })
+            .catch(function(error) {
+                return next(error);
+            });
     }
 
 }

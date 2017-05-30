@@ -2,19 +2,18 @@ var bodyParser = require('body-parser');
 var express = require('express');
 var config = require('../config');
 var userService = require('./services/user.js');
+var path = require('path');
 
 module.exports = function(app, router){
 
-    app.use(bodyParser.urlencoded({extended:true}))
+    app.use(bodyParser.urlencoded({extended:true}));
     app.use(bodyParser.json());
-    app.use(express.static(__dirname + '../client'));
+    app.use(express.static(path.join(__dirname, '../public')));
     app.use('/', router);
 
     router.use('/api', function(req, res, next) {
         next();
     });
-
-
 
     router.use(function(req, res, next) {
         res.header("Access-Control-Allow-Origin", "http://localhost:3000");

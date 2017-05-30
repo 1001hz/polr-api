@@ -1,6 +1,7 @@
 var api = require('./controllers/api');
 var user = require('./controllers/user');
 var auth = require('./controllers/auth');
+var league = require('./controllers/league');
 
 module.exports = function(router){
 
@@ -35,6 +36,10 @@ module.exports = function(router){
         .route('/api/forgot-password')
         .post(auth.forgotPassword);
 
+    router
+        .route('/api/reset-password')
+        .post(auth.resetPassword);
+
     /**
      * User Section
      */
@@ -55,11 +60,28 @@ module.exports = function(router){
         .route('/api/user/password')
         .post(user.updatePassword);
 
+    router
+        .route('/api/user/avatar')
+        .post(user.updateAvatar);
+
     /**
      * League Section
      */
 
     router
         .route('/api/league/:id')
-        .get(user.findById);
+        .get(league.findById);
+
+    router
+        .route('/api/league')
+        .post(league.create);
+
+    router
+        .route('/api/leagues')
+        .get(league.fetch);
+
+    router
+        .route('/api/league/join')
+        .post(league.joinLeague);
+
 }
